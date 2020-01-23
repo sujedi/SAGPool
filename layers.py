@@ -16,7 +16,8 @@ class SAGPool(torch.nn.Module):
             batch = edge_index.new_zeros(x.size(0))
         #x = x.unsqueeze(-1) if x.dim() == 1 else x
         score = self.score_layer(x,edge_index).squeeze()
-
+        score = self.non_linearity(score)
+        
         perm = topk(score, self.ratio, batch)
         x = x[perm] * self.non_linearity(score[perm]).view(-1, 1)
         batch = batch[perm]
